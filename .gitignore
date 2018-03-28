@@ -1,0 +1,6 @@
+# Go
+/pkg
+/bin
+
+# IDEs
+.idea

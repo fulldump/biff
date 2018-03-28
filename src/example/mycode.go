@@ -1,0 +1,6 @@
+package example
+
+
+func MyCode() {
+
+}
