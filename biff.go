@@ -7,6 +7,7 @@ type A struct {
 	f         F
 	substatus *[]int
 	done      bool
+	title     string
 }
 
 func NewTest(f F) *A {
@@ -15,10 +16,12 @@ func NewTest(f F) *A {
 	}
 }
 
-func (t *A) Alternative(f F) *A {
+func (t *A) Alternative(title string, f F) *A {
 
 	if t.skip == 0 {
-		t.done = NewTest(f).Run(t.substatus)
+		n := NewTest(f)
+		n.title = title
+		t.done = n.Run(t.substatus)
 	}
 
 	t.skip--
@@ -27,6 +30,8 @@ func (t *A) Alternative(f F) *A {
 }
 
 func (t *A) Run(status *[]int) (done bool) {
+
+	fmt.Println("Case:", t.title)
 
 	skip := &(*status)[0]
 	substatus := (*status)[1:]
@@ -51,7 +56,7 @@ func (t *A) Run(status *[]int) (done bool) {
 
 type F func(t *A)
 
-func Alternative(f F) {
+func Alternative(title string, f F) {
 
 	// Ñap :_(
 	status := []int{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
@@ -59,6 +64,7 @@ func Alternative(f F) {
 	for {
 
 		t := NewTest(f)
+		t.title = title
 
 		done := t.Run(&status)
 
