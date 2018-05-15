@@ -1,13 +1,17 @@
 package biff
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 type A struct {
-	skip      int
-	f         F
-	substatus *[]int
-	done      bool
-	title     string
+	skip        int
+	f           F
+	substatus   *[]int
+	done        bool
+	title       string
+	description string
 }
 
 func NewTest(f F) *A {
@@ -43,6 +47,7 @@ func (t *A) Run(status *[]int) (done bool) {
 
 	// There is no more alternatives
 	if t.skip == 0 {
+		printDescription(t.description)
 		(*status)[0] = 0
 		return true
 	}
@@ -54,7 +59,25 @@ func (t *A) Run(status *[]int) (done bool) {
 	return
 }
 
-type F func(t *A)
+func printDescription(s string) {
+	if s == "" {
+		return
+	}
+
+	for _, line := range strings.Split(s, "\n") {
+		fmt.Println(strings.TrimSpace(line))
+	}
+}
+
+func (t *A) GetTitle() string {
+	return t.title
+}
+
+func (t *A) SetDescription(s string) {
+	t.description = s
+}
+
+type F func(a *A)
 
 func Alternative(title string, f F) {
 
