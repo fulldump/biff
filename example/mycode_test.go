@@ -63,3 +63,28 @@ func TestMyCode(t *testing.T) {
 	})
 
 }
+
+func TestExample(t *testing.T) {
+
+	biff.Alternative("Instance service", func(a *biff.A) {
+
+		s := NewMyService()
+
+		a.Alternative("Register user", func(a *biff.A) {
+
+			john := s.RegisterUser("john@email.com", "john-123")
+			a.AssertNotNil(john)
+
+			a.Alternative("Bad credentials", func(a *biff.A) {
+				user := s.Login(john.Email, "bad-password")
+				a.AssertNil(user)
+
+			}).Alternative("Login", func(a *biff.A) {
+				user := s.Login(john.Email, john.Password)
+				a.AssertEqual(user, john)
+			})
+
+		})
+	})
+
+}
