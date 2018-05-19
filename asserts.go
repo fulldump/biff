@@ -171,20 +171,20 @@ func printShould(value interface{}) {
 			return
 		}
 
-		a_func, ok := a.(*ast.CallExpr)
+		aFunc, ok := a.(*ast.CallExpr)
 		if !ok {
 			return
 		}
 
-		a_func_ident, ok := a_func.Args[0].(*ast.Ident)
+		aFuncIdent, ok := aFunc.Args[0].(*ast.Ident)
 		if ok {
-			variable = a_func_ident.String()
+			variable = aFuncIdent.String()
 			return
 		}
 
-		a_func_expr, ok := a_func.Args[0].(*ast.IndexExpr)
+		aFuncExpr, ok := aFunc.Args[0].(*ast.IndexExpr)
 		if ok {
-			variable = l[a_func_expr.Pos()-1 : a_func_expr.End()-1]
+			variable = l[aFuncExpr.Pos()-1 : aFuncExpr.End()-1]
 			return
 		}
 

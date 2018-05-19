@@ -14,7 +14,7 @@ type MyService struct {
 // User represents a mock user for `MyService`
 type User struct {
 
-	// Email is the user email addres without restrictions
+	// Email is the user email address without restrictions
 	Email string
 
 	// Password is the user clear password
