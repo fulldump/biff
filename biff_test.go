@@ -51,7 +51,7 @@ func Test_scope(t *testing.T) {
 
 }
 
-func Example_BasicUsage() {
+func Example_basicUsage() {
 
 	Alternative("Initial value", func(a *A) {
 		value := 10

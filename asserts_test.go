@@ -1,6 +1,6 @@
 package biff
 
-func Example_JSON_Equality() {
+func Example_jsonEquality() {
 
 	Alternative("Json equality", func(a *A) {
 
