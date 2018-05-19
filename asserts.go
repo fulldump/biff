@@ -34,7 +34,7 @@ func (a *A) AssertNotEqual(obtained, expected interface{}) bool {
 
 // AssertEqual return true if `obtained` is equal to `expected` otherwise it
 // will print trace and exit.
-func (t *A) AssertEqual(obtained, expected interface{}) bool {
+func (a *A) AssertEqual(obtained, expected interface{}) bool {
 
 	if reflect.DeepEqual(expected, obtained) {
 		printShould(expected)
@@ -63,7 +63,7 @@ func readFileLine(filename string, line int) string {
 // AssertEqualJson return true if `obtained` is equal to `expected`. Prior to
 // comparison, both values are JSON Marshaled/Unmarshaled to avoid JSON type
 // issues like int vs float etc. Otherwise it will print trace and exit.
-func (t *A) AssertEqualJson(obtained, expected interface{}) bool {
+func (a *A) AssertEqualJson(obtained, expected interface{}) bool {
 
 	e := interface{}(nil)
 	{
@@ -95,7 +95,7 @@ func (t *A) AssertEqualJson(obtained, expected interface{}) bool {
 
 // AssertNil return true if `obtained` is nil, otherwise it will print trace and
 // exit.
-func (t *A) AssertNil(obtained interface{}) bool {
+func (a *A) AssertNil(obtained interface{}) bool {
 
 	if nil == obtained || reflect.ValueOf(obtained).IsNil() {
 		printShould(nil)
@@ -115,7 +115,7 @@ func (t *A) AssertNil(obtained interface{}) bool {
 
 // AssertNotNil return true if `obtained` is NOT nil, otherwise it will print trace
 // and exit.
-func (t *A) AssertNotNil(obtained interface{}) bool {
+func (a *A) AssertNotNil(obtained interface{}) bool {
 
 	line := getStackLine(2)
 	if nil == obtained || reflect.ValueOf(obtained).IsNil() {
