@@ -15,13 +15,13 @@ type MyService struct {
 type User struct {
 
 	// Email is the user email addres without restrictions
-	Email    string
+	Email string
 
 	// Password is the user clear password
 	Password string
 }
 
-// RegiesterUser will register a new user with a password. If user already
+// RegisterUser will register a new user with a password. If user already
 // exists a nil value will be returned.
 func (m *MyService) RegisterUser(email, password string) *User {
 
@@ -39,7 +39,6 @@ func (m *MyService) RegisterUser(email, password string) *User {
 
 	return u
 }
-
 
 // RetrieveUser will find a user by email. If user do not exist, nil will be
 // returned.

@@ -134,7 +134,7 @@ Most commonly used assertions are implemented:
 * `AssertEqualJson`
 * `AssertNil`
 * `AssertNotNil`
-* `AssertDistinct`
+* `AssertNotEqual`
 
 
 ## Contribute

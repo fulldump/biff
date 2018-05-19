@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-// AssertDistinct return true if `obtained` is not equal to `expected` otherwise
+// AssertNotEqual return true if `obtained` is not equal to `expected` otherwise
 // it will print trace and exit.
 func (a *A) AssertNotEqual(obtained, expected interface{}) bool {
 	if !reflect.DeepEqual(expected, obtained) {
@@ -32,7 +32,7 @@ func (a *A) AssertNotEqual(obtained, expected interface{}) bool {
 	return false
 }
 
-// AssertDistinct return true if `obtained` is equal to `expected` otherwise it
+// AssertEqual return true if `obtained` is equal to `expected` otherwise it
 // will print trace and exit.
 func (t *A) AssertEqual(obtained, expected interface{}) bool {
 
@@ -113,7 +113,7 @@ func (t *A) AssertNil(obtained interface{}) bool {
 	return false
 }
 
-// AssertNil return true if `obtained` is NOT nil, otherwise it will print trace
+// AssertNotNil return true if `obtained` is NOT nil, otherwise it will print trace
 // and exit.
 func (t *A) AssertNotNil(obtained interface{}) bool {
 
