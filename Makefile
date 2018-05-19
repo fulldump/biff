@@ -15,7 +15,7 @@ test:
 	$(GOCMD) test $(PROJECT) -cover
 
 example:
-	$(GOCMD) test $(PROJECT)/example
+	$(GOCMD) test $(PROJECT)/example -cover
 
 coverage:
 	$(GOCMD) test ./src/github.com/fulldump/goconfig -cover -covermode=count -coverprofile=coverage.out; \

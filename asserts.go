@@ -13,7 +13,9 @@ import (
 	"strings"
 )
 
-func (t *A) AssertDistinct(obtained, expected interface{}) bool {
+// AssertDistinct return true if `obtained` is not equal to `expected` otherwise
+// it will print trace and exit.
+func (a *A) AssertNotEqual(obtained, expected interface{}) bool {
 	if !reflect.DeepEqual(expected, obtained) {
 		printShould(expected)
 		return true
@@ -30,6 +32,8 @@ func (t *A) AssertDistinct(obtained, expected interface{}) bool {
 	return false
 }
 
+// AssertDistinct return true if `obtained` is equal to `expected` otherwise it
+// will print trace and exit.
 func (t *A) AssertEqual(obtained, expected interface{}) bool {
 
 	if reflect.DeepEqual(expected, obtained) {
@@ -56,14 +60,24 @@ func readFileLine(filename string, line int) string {
 	return lines[line-1]
 }
 
+// AssertEqualJson return true if `obtained` is equal to `expected`. Prior to
+// comparison, both values are JSON Marshaled/Unmarshaled to avoid JSON type
+// issues like int vs float etc. Otherwise it will print trace and exit.
 func (t *A) AssertEqualJson(obtained, expected interface{}) bool {
 
-	b, _ := json.Marshal(expected)
-
 	e := interface{}(nil)
-	json.Unmarshal(b, &e)
+	{
+		b, _ := json.Marshal(expected)
+		json.Unmarshal(b, &e)
+	}
 
-	if reflect.DeepEqual(e, obtained) {
+	o := interface{}(nil)
+	{
+		b, _ := json.Marshal(obtained)
+		json.Unmarshal(b, &o)
+	}
+
+	if reflect.DeepEqual(e, o) {
 		printShould(expected)
 		return true
 	}
@@ -72,13 +86,15 @@ func (t *A) AssertEqualJson(obtained, expected interface{}) bool {
 	fmt.Printf(""+
 		"    Expected: %#v\n"+
 		"    Obtained: %#v\n"+
-		"    at %s\n", expected, obtained, line)
+		"    at %s\n", e, o, line)
 
 	os.Exit(1)
 
 	return false
 }
 
+// AssertNil return true if `obtained` is nil, otherwise it will print trace and
+// exit.
 func (t *A) AssertNil(obtained interface{}) bool {
 
 	if nil == obtained || reflect.ValueOf(obtained).IsNil() {
@@ -97,6 +113,8 @@ func (t *A) AssertNil(obtained interface{}) bool {
 	return false
 }
 
+// AssertNil return true if `obtained` is NOT nil, otherwise it will print trace
+// and exit.
 func (t *A) AssertNotNil(obtained interface{}) bool {
 
 	line := getStackLine(2)

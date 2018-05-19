@@ -1,8 +1,9 @@
 package example
 
 import (
-	"biff"
 	"testing"
+
+	"github.com/fulldump/biff"
 )
 
 func TestMyCode(t *testing.T) {
@@ -47,8 +48,8 @@ func TestMyCode(t *testing.T) {
 			})
 
 			a.Alternative("Login", func(a *biff.A) {
-				a.SetDescription(`When a user is logged in, it should be
-				returned back.`)
+				a.Description = `When a user is logged in, it should be
+				returned back.`
 
 				user := s.Login("john@email.com", "john-123")
 				a.AssertNotNil(user)

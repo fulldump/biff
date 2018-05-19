@@ -8,16 +8,16 @@ func Test_isolation(t *testing.T) {
 
 		words := []string{}
 
-		words = append(words, a.title)
+		words = append(words, a.Title)
 		a.AssertEqual(words, []string{"test a"})
 
 		a.Alternative("test a1", func(a *A) {
-			words = append(words, a.title)
+			words = append(words, a.Title)
 			a.AssertEqual(words, []string{"test a", "test a1"})
 		})
 
 		a.Alternative("test a2", func(a *A) {
-			words = append(words, a.title)
+			words = append(words, a.Title)
 			a.AssertEqual(words, []string{"test a", "test a2"})
 		})
 
@@ -48,5 +48,41 @@ func Test_scope(t *testing.T) {
 		})
 
 	})
+
+}
+
+func Example_BasicUsage() {
+
+	Alternative("Initial value", func(a *A) {
+		value := 10
+		a.AssertEqual(value, 10)
+
+		a.Alternative("Plus 50", func(a *A) {
+			// Here value == 10
+			value += 50
+			a.AssertEqual(value, 60)
+		})
+
+		a.Alternative("Multiply by 2", func(a *A) {
+			// Here value == 10 again (it is an alternative from the parent)
+			value *= 2
+			a.AssertEqual(value, 20)
+		})
+	})
+
+	// Output:
+	// Case: Initial value
+	//     value is 10
+	// Case: Plus 50
+	//     value is 60
+	// -------------------------------
+	// Case: Initial value
+	//     value is 10
+	// Case: Multiply by 2
+	//     value is 20
+	// -------------------------------
+	// Case: Initial value
+	//     value is 10
+	// -------------------------------
 
 }
