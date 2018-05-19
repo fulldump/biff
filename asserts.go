@@ -21,13 +21,7 @@ func (a *A) AssertNotEqual(obtained, expected interface{}) bool {
 		return true
 	}
 
-	line := getStackLine(2)
-	fmt.Printf(""+
-		"    Expected: %#v\n"+
-		"    Obtained: %#v\n"+
-		"    at %s\n", expected, obtained, line)
-
-	os.Exit(1)
+	printExpectedObtained(expected, obtained)
 
 	return false
 }
@@ -41,13 +35,7 @@ func (a *A) AssertEqual(obtained, expected interface{}) bool {
 		return true
 	}
 
-	line := getStackLine(2)
-	fmt.Printf(""+
-		"    Expected: %#v\n"+
-		"    Obtained: %#v\n"+
-		"    at %s\n", expected, obtained, line)
-
-	os.Exit(1)
+	printExpectedObtained(expected, obtained)
 
 	return false
 }
@@ -82,13 +70,7 @@ func (a *A) AssertEqualJson(obtained, expected interface{}) bool {
 		return true
 	}
 
-	line := getStackLine(2)
-	fmt.Printf(""+
-		"    Expected: %#v\n"+
-		"    Obtained: %#v\n"+
-		"    at %s\n", e, o, line)
-
-	os.Exit(1)
+	printExpectedObtained(e, o)
 
 	return false
 }
@@ -102,13 +84,7 @@ func (a *A) AssertNil(obtained interface{}) bool {
 		return true
 	}
 
-	line := getStackLine(2)
-	fmt.Printf(""+
-		"    Expected: nil\n"+
-		"    Obtained: %#v\n"+
-		"    at %s\n", obtained, line)
-
-	os.Exit(1)
+	printExpectedObtained(nil, obtained)
 
 	return false
 }
@@ -117,8 +93,8 @@ func (a *A) AssertNil(obtained interface{}) bool {
 // and exit.
 func (a *A) AssertNotNil(obtained interface{}) bool {
 
-	line := getStackLine(2)
 	if nil == obtained || reflect.ValueOf(obtained).IsNil() {
+		line := getStackLine(2)
 		fmt.Printf(""+
 			"    Expected: not nil\n"+
 			"    Obtained: %#v\n"+
@@ -129,6 +105,54 @@ func (a *A) AssertNotNil(obtained interface{}) bool {
 	printShould(obtained)
 
 	return true
+}
+
+// AssertTrue return true if `obtained` is true, otherwise it will print trace
+// and exit.
+func (a *A) AssertTrue(obtained interface{}) bool {
+
+	return a.AssertEqual(obtained, true)
+}
+
+// AssertFalse return true if `obtained` is false, otherwise it will print trace
+// and exit.
+func (a *A) AssertFalse(obtained interface{}) bool {
+
+	return a.AssertEqual(obtained, false)
+}
+
+// AssertInArray return true if `item` match at least with one element of the
+// array. Otherwise it will print trace and exit.
+func (a *A) AssertInArray(item, array interface{}) bool {
+
+	v := reflect.ValueOf(array)
+	if v.Kind() != reflect.Array && v.Kind() != reflect.Slice {
+		line := getStackLine(2)
+		fmt.Printf("Expected second argument to be array:\n"+
+			"    Obtained: %#v\n"+
+			"    at %s\n", array, line)
+		os.Exit(1)
+	}
+
+	l := v.Len()
+	for i := 0; i < l; i++ {
+		e := v.Index(i)
+		if reflect.DeepEqual(e.Interface(), item) {
+			printShould(item)
+			return true
+		}
+	}
+
+	line := getStackLine(2)
+	fmt.Printf(""+
+		"    Expected item to be in array.\n"+
+		"    Item: %#v\n"+
+		"    Array: %#v\n"+
+		"    at %s\n", item, array, line)
+
+	os.Exit(1)
+
+	return false
 }
 
 func getStackLine(linesToSkip int) string {
@@ -143,6 +167,18 @@ func getStackLine(linesToSkip int) string {
 		}
 	}
 	return lines[linesToSkip*2+3] + " " + lines[linesToSkip*2+4]
+}
+
+func printExpectedObtained(expected, obtained interface{}) {
+
+	line := getStackLine(3)
+	fmt.Printf(""+
+		"    Expected: %#v\n"+
+		"    Obtained: %#v\n"+
+		"    at %s\n", expected, obtained, line)
+
+	os.Exit(1)
+
 }
 
 func printShould(value interface{}) {

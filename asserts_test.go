@@ -67,7 +67,7 @@ func TestA_AssertNil(t *testing.T) {
 
 func TestA_AssertNotEqual(t *testing.T) {
 
-	Alternative("Assert nil", func(a *A) {
+	Alternative("Assert not equal", func(a *A) {
 		one := 1
 		two := 2
 
@@ -80,11 +80,50 @@ func TestA_AssertNotEqual(t *testing.T) {
 
 func TestA_AssertNotNil(t *testing.T) {
 
-	Alternative("Assert equal", func(a *A) {
+	Alternative("Assert not nil", func(a *A) {
 		one := []string{}
 
 		if !a.AssertNotNil(one) {
 			t.Error("AssertEqual should return true")
+		}
+	})
+
+}
+
+func TestA_AssertInArray(t *testing.T) {
+
+	Alternative("Assert in array", func(a *A) {
+
+		colors := []string{"red", "green", "blue"}
+
+		if !a.AssertInArray("red", colors) {
+			t.Error("AssertInArray should return true")
+		}
+	})
+
+}
+
+func TestA_AssertTrue(t *testing.T) {
+
+	Alternative("Assert true", func(a *A) {
+
+		value := 1 == 1
+
+		if !a.AssertTrue(value) {
+			t.Error("AssertTrue should return true")
+		}
+	})
+
+}
+
+func TestA_AssertFalse(t *testing.T) {
+
+	Alternative("Assert false", func(a *A) {
+
+		value := 1 == 2
+
+		if !a.AssertFalse(value) {
+			t.Error("AssertTrue should return true")
 		}
 	})
 

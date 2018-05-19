@@ -1,6 +1,8 @@
 package biff
 
-import "testing"
+import (
+	"testing"
+)
 
 func Test_isolation(t *testing.T) {
 
@@ -84,5 +86,29 @@ func Example_basicUsage() {
 	// Case: Initial value
 	//     value is 10
 	// -------------------------------
+
+}
+
+func Test_trimMultiline(t *testing.T) {
+
+	Alternative("TrimMultiline", func(a *A) {
+
+		a.Alternative("empty", func(a *A) {
+
+			a.AssertEqual("", trimMultiline(""))
+
+		})
+
+		a.Alternative("multiple lines", func(a *A) {
+
+			a.AssertEqual(trimMultiline(`
+one
+    two
+	     three       
+`), "\none\ntwo\nthree\n\n")
+
+		})
+
+	})
 
 }

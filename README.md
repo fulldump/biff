@@ -135,6 +135,9 @@ Most commonly used assertions are implemented:
 * `AssertNil`
 * `AssertNotNil`
 * `AssertNotEqual`
+* `AssertInArray`
+* `AssertTrue`
+* `AssertFalse`
 
 
 ## Contribute

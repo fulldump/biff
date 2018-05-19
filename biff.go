@@ -127,14 +127,21 @@ func (a *A) run(status *[]int) (done bool) {
 	return
 }
 
-func printDescription(s string) {
+func trimMultiline(s string) (r string) {
+
 	if s == "" {
 		return
 	}
 
 	for _, line := range strings.Split(s, "\n") {
-		fmt.Println(strings.TrimSpace(line))
+		r += strings.TrimSpace(line) + "\n"
 	}
+
+	return
+}
+
+func printDescription(s string) {
+	fmt.Print(trimMultiline(s))
 }
 
 // F is a callback alternative function passed to an `Alternative` with testing
