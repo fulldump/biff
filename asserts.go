@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"go/ast"
 	"go/parser"
+	"go/token"
 	"io/ioutil"
 	"os"
 	"reflect"
@@ -111,14 +112,28 @@ func (a *A) AssertNotNil(obtained interface{}) bool {
 // and exit.
 func (a *A) AssertTrue(obtained interface{}) bool {
 
-	return a.AssertEqual(obtained, true)
+	if reflect.DeepEqual(true, obtained) {
+		printShould(true)
+		return true
+	}
+
+	printExpectedObtained(true, obtained)
+
+	return false
 }
 
 // AssertFalse return true if `obtained` is false, otherwise it will print trace
 // and exit.
 func (a *A) AssertFalse(obtained interface{}) bool {
 
-	return a.AssertEqual(obtained, false)
+	if reflect.DeepEqual(false, obtained) {
+		printShould(false)
+		return true
+	}
+
+	printExpectedObtained(true, obtained)
+
+	return false
 }
 
 // AssertInArray return true if `item` match at least with one element of the
@@ -219,7 +234,7 @@ func printShould(value interface{}) {
 		}
 
 		aFuncExpr, ok := aFunc.Args[0].(*ast.IndexExpr)
-		if ok {
+		if ok && aFuncExpr.Pos() > 0 && (aFuncExpr.End()-1) < token.Pos(len(l)) {
 			variable = l[aFuncExpr.Pos()-1 : aFuncExpr.End()-1]
 			return
 		}
