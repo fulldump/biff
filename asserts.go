@@ -14,6 +14,10 @@ import (
 	"strings"
 )
 
+var exit = func() {
+	os.Exit(1)
+}
+
 // AssertNotEqual return true if `obtained` is not equal to `expected` otherwise
 // it will print trace and exit.
 func (a *A) AssertNotEqual(obtained, expected interface{}) bool {
@@ -100,6 +104,7 @@ func (a *A) AssertNotNil(obtained interface{}) bool {
 			"    Expected: not nil\n"+
 			"    Obtained: %#v\n"+
 			"    at %s\n", obtained, line)
+		exit()
 		return false
 	}
 
@@ -146,7 +151,7 @@ func (a *A) AssertInArray(item, array interface{}) bool {
 		fmt.Printf("Expected second argument to be array:\n"+
 			"    Obtained: %#v\n"+
 			"    at %s\n", array, line)
-		os.Exit(1)
+		exit()
 	}
 
 	l := v.Len()
@@ -165,7 +170,7 @@ func (a *A) AssertInArray(item, array interface{}) bool {
 		"    Array: %#v\n"+
 		"    at %s\n", item, array, line)
 
-	os.Exit(1)
+	exit()
 
 	return false
 }
@@ -192,8 +197,7 @@ func printExpectedObtained(expected, obtained interface{}) {
 		"    Obtained: %#v\n"+
 		"    at %s\n", expected, obtained, line)
 
-	os.Exit(1)
-
+	exit()
 }
 
 func printShould(value interface{}) {
