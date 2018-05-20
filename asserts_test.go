@@ -1,6 +1,9 @@
 package biff
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
 func Example_jsonEquality() {
 
@@ -126,5 +129,16 @@ func TestA_AssertFalse(t *testing.T) {
 			t.Error("AssertTrue should return true")
 		}
 	})
+
+}
+
+func Test_getStackLine(t *testing.T) {
+
+	func() {
+		l := getStackLine(2)
+		if !strings.HasPrefix(l, "github.com/fulldump/biff.Test_getStackLine(") {
+			t.Error("getStackLine should start by 'github.com/fulldump/biff.Test_getStackLine('")
+		}
+	}()
 
 }
