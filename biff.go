@@ -19,7 +19,7 @@
 //         })
 //     })
 //
-//	Will produce this output:
+// Will produce this output:
 //     Case: Initial value
 //         value is 10
 //     Case: Plus 50
@@ -63,7 +63,7 @@ import (
 	"strings"
 )
 
-// A is a type passed to alternative functions to manage recursion status and
+// An A is a type passed to alternative functions to manage recursion status and
 // keep human information information related to the test: `title` and
 // `description`.
 type A struct {
