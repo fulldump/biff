@@ -2,6 +2,7 @@
 
 <p align="center">
 <a href="https://travis-ci.org/fulldump/biff"><img src="https://travis-ci.org/fulldump/biff.svg?branch=master"></a>
+<a href="https://cover.run/go?tag=golang-1.10&repo=github.com%2Ffulldump%2Fbiff"><img src="https://cover.run/go/github.com/fulldump/biff.svg?style=flat&tag=golang-1.10" alt="coverage badge"></a>
 <a href="https://goreportcard.com/report/fulldump/biff"><img src="http://goreportcard.com/badge/fulldump/biff"></a>
 <a href="https://godoc.org/github.com/fulldump/biff"><img src="https://godoc.org/github.com/fulldump/biff?status.svg" alt="GoDoc"></a>
 <a href="https://codeclimate.com/github/fulldump/biff/maintainability"><img src="https://api.codeclimate.com/v1/badges/1b34e1fe8a1ab355b044/maintainability" /></a>
