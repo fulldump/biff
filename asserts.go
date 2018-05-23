@@ -231,15 +231,9 @@ func printShould(value interface{}) {
 			return
 		}
 
-		aFuncIdent, ok := aFunc.Args[0].(*ast.Ident)
-		if ok {
-			variable = aFuncIdent.String()
-			return
-		}
-
-		aFuncExpr, ok := aFunc.Args[0].(*ast.IndexExpr)
-		if ok && aFuncExpr.Pos() > 0 && (aFuncExpr.End()-1) < token.Pos(len(l)) {
-			variable = l[aFuncExpr.Pos()-1 : aFuncExpr.End()-1]
+		arg0 := aFunc.Args[0]
+		if ok && arg0.Pos() > 0 && (arg0.End()-1) < token.Pos(len(l)) {
+			variable = l[arg0.Pos()-1 : arg0.End()-1]
 			return
 		}
 
