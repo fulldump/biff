@@ -22,7 +22,7 @@ Biff stands for BIFurcation Framework based on nesting cases or alternatives. Yo
 - [Supported assertions](#supported-assertions)
 - [Contribute](#contribute)
 - [Testing](#testing)
-- [Example project](#examle-project)
+- [Example project](#example-project)
 
 <!-- /MarkdownTOC -->
 
@@ -155,7 +155,7 @@ Who will test the tester? ha ha
 There are no tests for the moment but there will be, sooner than later.
 
 
-## Examle project
+## Example project
 
 This project includes an example project with some naive business logic plus some Biff tests.
 
