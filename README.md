@@ -22,7 +22,7 @@ Biff stands for BIFurcation Framework based on nesting cases or alternatives. Yo
 - [Supported assertions](#supported-assertions)
 - [Contribute](#contribute)
 - [Testing](#testing)
-- [Examle project](#examle-project)
+- [Example project](#examle-project)
 
 <!-- /MarkdownTOC -->
 
