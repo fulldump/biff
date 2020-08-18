@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"go/ast"
 	"go/parser"
-	"go/token"
 	"io/ioutil"
 	"os"
 	"reflect"
@@ -22,7 +21,8 @@ var exit = func() {
 // it will print trace and exit.
 func (a *A) AssertNotEqual(obtained, expected interface{}) bool {
 	if !reflect.DeepEqual(expected, obtained) {
-		printShould(expected)
+		l, r := printShould(expected)
+		fmt.Printf("    %s is not equal %s\n", l, r)
 		return true
 	}
 
@@ -36,7 +36,8 @@ func (a *A) AssertNotEqual(obtained, expected interface{}) bool {
 func (a *A) AssertEqual(obtained, expected interface{}) bool {
 
 	if reflect.DeepEqual(expected, obtained) {
-		printShould(expected)
+		l, r := printShould(expected)
+		fmt.Printf("    %s is %s\n", l, r)
 		return true
 	}
 
@@ -71,7 +72,8 @@ func (a *A) AssertEqualJson(obtained, expected interface{}) bool {
 	}
 
 	if reflect.DeepEqual(e, o) {
-		printShould(expected)
+		l, r := printShould(expected)
+		fmt.Printf("    %s is same JSON as %s\n", l, r)
 		return true
 	}
 
@@ -85,7 +87,8 @@ func (a *A) AssertEqualJson(obtained, expected interface{}) bool {
 func (a *A) AssertNil(obtained interface{}) bool {
 
 	if nil == obtained || reflect.ValueOf(obtained).IsNil() {
-		printShould(nil)
+		l, _ := printShould(nil)
+		fmt.Printf("    %s is nil\n", l)
 		return true
 	}
 
@@ -98,7 +101,7 @@ func (a *A) AssertNil(obtained interface{}) bool {
 // and exit.
 func (a *A) AssertNotNil(obtained interface{}) bool {
 
-	if nil == obtained || reflect.ValueOf(obtained).IsNil() {
+	if isNil(obtained) {
 		line := getStackLine(2)
 		fmt.Printf(""+
 			"    Expected: not nil\n"+
@@ -108,7 +111,12 @@ func (a *A) AssertNotNil(obtained interface{}) bool {
 		return false
 	}
 
-	printShould(obtained)
+	l, _ := printShould(nil)
+	v := fmt.Sprintf("%#v", obtained)
+	if v != l {
+		v = " (" + v + ")"
+	}
+	fmt.Printf("    %s is not nil%s\n", l, v)
 
 	return true
 }
@@ -118,7 +126,8 @@ func (a *A) AssertNotNil(obtained interface{}) bool {
 func (a *A) AssertTrue(obtained interface{}) bool {
 
 	if reflect.DeepEqual(true, obtained) {
-		printShould(true)
+		l, _ := printShould(nil)
+		fmt.Printf("    %s is true\n", l)
 		return true
 	}
 
@@ -132,7 +141,8 @@ func (a *A) AssertTrue(obtained interface{}) bool {
 func (a *A) AssertFalse(obtained interface{}) bool {
 
 	if reflect.DeepEqual(false, obtained) {
-		printShould(false)
+		l, _ := printShould(nil)
+		fmt.Printf("    %s is false\n", l)
 		return true
 	}
 
@@ -143,7 +153,7 @@ func (a *A) AssertFalse(obtained interface{}) bool {
 
 // AssertInArray return true if `item` match at least with one element of the
 // array. Otherwise it will print trace and exit.
-func (a *A) AssertInArray(item, array interface{}) bool {
+func (a *A) AssertInArray(array interface{}, item interface{}) bool {
 
 	v := reflect.ValueOf(array)
 	if v.Kind() != reflect.Array && v.Kind() != reflect.Slice {
@@ -158,7 +168,8 @@ func (a *A) AssertInArray(item, array interface{}) bool {
 	for i := 0; i < l; i++ {
 		e := v.Index(i)
 		if reflect.DeepEqual(e.Interface(), item) {
-			printShould(item)
+			l, r := printShould(item)
+			fmt.Printf("    %s[%d] is %s\n", l, i, r)
 			return true
 		}
 	}
@@ -200,8 +211,9 @@ func printExpectedObtained(expected, obtained interface{}) {
 	exit()
 }
 
-func printShould(value interface{}) {
-	variable := "It"
+func printShould(value interface{}) (arg0, arg1 string) {
+	arg0 = "It"
+	arg1 = fmt.Sprintf("%#v", value)
 
 	func() {
 
@@ -231,13 +243,56 @@ func printShould(value interface{}) {
 			return
 		}
 
-		arg0 := aFunc.Args[0]
-		if ok && arg0.Pos() > 0 && (arg0.End()-1) < token.Pos(len(l)) {
-			variable = l[arg0.Pos()-1 : arg0.End()-1]
-			return
+		a0 := aFunc.Args[0]
+		arg0 = l[a0.Pos()-1 : a0.End()-1]
+
+		if len(aFunc.Args) > 1 {
+			a1 := aFunc.Args[1]
+			arg1 = l[a1.Pos()-1 : a1.End()-1]
 		}
 
 	}()
 
-	fmt.Printf("    %s is %#v\n", variable, value)
+	v := fmt.Sprintf("%#v", value)
+
+	if v != arg1 {
+		arg1 = arg1 + " (" + v + ")"
+	}
+
+	return
+}
+
+// Source: https://sourcegraph.com/github.com/stretchr/testify/-/blob/assert/assertions.go#L520:6
+// isNil checks if a specified object is nil or not, without Failing.
+func isNil(object interface{}) bool {
+	if object == nil {
+		return true
+	}
+
+	value := reflect.ValueOf(object)
+	kind := value.Kind()
+	isNilableKind := containsKind(
+		[]reflect.Kind{
+			reflect.Chan, reflect.Func,
+			reflect.Interface, reflect.Map,
+			reflect.Ptr, reflect.Slice},
+		kind)
+
+	if isNilableKind && value.IsNil() {
+		return true
+	}
+
+	return false
+}
+
+// source: github.com/stretchr/testify/-/blob/assert/assertions.go#L524
+// containsKind checks if a specified kind in the slice of kinds.
+func containsKind(kinds []reflect.Kind, kind reflect.Kind) bool {
+	for i := 0; i < len(kinds); i++ {
+		if kind == kinds[i] {
+			return true
+		}
+	}
+
+	return false
 }

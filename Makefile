@@ -1,10 +1,10 @@
 PROJECT = github.com/fulldump/biff
 
-GOCMD=GOPATH=`pwd` go
+GOCMD=go
 
 .PHONY: all setup test coverage example
 
-all:	test
+all: test
 
 setup:
 	mkdir -p src/$(PROJECT)
@@ -12,7 +12,7 @@ setup:
 	ln -s ../../.. src/$(PROJECT)
 
 test:
-	$(GOCMD) test $(PROJECT) -cover
+	$(GOCMD) test $(PROJECT)/... -cover
 
 example:
 	$(GOCMD) test $(PROJECT)/example -cover

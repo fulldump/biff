@@ -5,7 +5,28 @@ import (
 	"testing"
 )
 
-func Example_jsonEquality() {
+func ExampleA_AssertEqual() {
+	Alternative("AssertEqual", func(a *A) {
+
+		user := map[string]interface{}{
+			"name": "John",
+		}
+		creator := map[string]interface{}{
+			"name": "John",
+		}
+
+		a.AssertEqual(user, creator)
+
+	})
+
+	// Output:
+	// Case: AssertEqual
+	//     user is creator (map[string]interface {}{"name":"John"})
+	// -------------------------------
+
+}
+
+func ExampleA_AssertEqualJson() {
 
 	Alternative("Json equality", func(a *A) {
 
@@ -22,7 +43,110 @@ func Example_jsonEquality() {
 
 	// Output:
 	// Case: Json equality
-	//     i is map[string]interface {}{"number":33}
+	//     i is same JSON as f (map[string]interface {}{"number":33})
+	// -------------------------------
+}
+
+func ExampleA_AssertFalse() {
+
+	Alternative("AssertFalse", func(a *A) {
+
+		a.AssertFalse(1 == 2)
+
+	})
+
+	// Output:
+	// Case: AssertFalse
+	//     1 == 2 is false
+	// -------------------------------
+}
+
+func ExampleA_AssertInArray() {
+
+	Alternative("AssertInArray", func(a *A) {
+
+		data := []string{"a", "b", "c"}
+		myLetter := "b"
+
+		a.AssertInArray(data, myLetter)
+
+	})
+
+	// Output:
+	// Case: AssertInArray
+	//     data[1] is myLetter ("b")
+	// -------------------------------
+}
+
+func ExampleA_AssertNil() {
+
+	Alternative("AssertNil", func(a *A) {
+
+		x := 1
+		y := 2
+
+		a.AssertTrue(x+y == 3)
+
+	})
+
+	// Output:
+	// Case: AssertNil
+	//     x+y == 3 is true
+	// -------------------------------
+}
+
+func ExampleA_AssertNotEqual() {
+
+	Alternative("AssertNotEqual", func(a *A) {
+
+		x := 1
+		y := 2
+
+		a.AssertNotEqual(x, y)
+
+	})
+
+	// Output:
+	// Case: AssertNotEqual
+	//     x is not equal y (2)
+	// -------------------------------
+
+}
+
+func ExampleA_AssertNotNil() {
+
+	Alternative("AssertNotNil", func(a *A) {
+
+		user := &struct {
+			Name string
+		}{
+			Name: "John",
+		}
+
+		a.AssertNotNil(user)
+
+	})
+
+	// Output:
+	// Case: AssertNotNil
+	//     user is not nil (&struct { Name string }{Name:"John"})
+	// -------------------------------
+}
+
+func ExampleA_AssertTrue() {
+
+	Alternative("AssertTrue", func(a *A) {
+
+		x := 1
+		y := 2
+
+		a.AssertTrue(x+y == 3)
+
+	})
+
+	// Output:
+	// Case: AssertTrue
+	//     x+y == 3 is true
 	// -------------------------------
 }
 
@@ -209,7 +333,7 @@ func TestA_AssertInArray(t *testing.T) {
 
 		colors := []string{"red", "green", "blue"}
 
-		if !a.AssertInArray("red", colors) {
+		if !a.AssertInArray(colors, "red") {
 			t.Error("AssertInArray should return true")
 		}
 	})
