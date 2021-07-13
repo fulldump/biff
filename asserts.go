@@ -226,10 +226,16 @@ func printShould(value interface{}) (arg0, arg1 string) {
 
 		frames := runtime.CallersFrames(p[0].Stack())
 
-		frames.Next()
-		frames.Next()
-		frames.Next()
-		frame, _ := frames.Next()
+		// Make it compatible with latests golang versions (1.14 on)
+		frame, more := frames.Next()
+		for ; more; frame, more = frames.Next() {
+			if frame.Function == "github.com/fulldump/biff.printShould" {
+				break
+			}
+		}
+
+		frame, _ = frames.Next()
+		frame, _ = frames.Next()
 
 		l := readFileLine(frame.File, frame.Line)
 
