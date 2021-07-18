@@ -17,6 +17,7 @@ var exit = func() {
 	os.Exit(1)
 }
 
+// deprecated
 // AssertNotEqual return true if `obtained` is not equal to `expected` otherwise
 // it will print trace and exit.
 func (a *A) AssertNotEqual(obtained, expected interface{}) bool {
@@ -31,9 +32,38 @@ func (a *A) AssertNotEqual(obtained, expected interface{}) bool {
 	return false
 }
 
+// AssertNotEqual return true if `obtained` is not equal to `expected` otherwise
+// it will print trace and exit.
+func AssertNotEqual(obtained, expected interface{}) bool {
+	if !reflect.DeepEqual(expected, obtained) {
+		l, r := printShould(expected)
+		fmt.Printf("    %s is not equal %s\n", l, r)
+		return true
+	}
+
+	printExpectedObtained(expected, obtained)
+
+	return false
+}
+
+// deprecated
 // AssertEqual return true if `obtained` is equal to `expected` otherwise it
 // will print trace and exit.
 func (a *A) AssertEqual(obtained, expected interface{}) bool {
+	if reflect.DeepEqual(expected, obtained) {
+		l, r := printShould(expected)
+		fmt.Printf("    %s is %s\n", l, r)
+		return true
+	}
+
+	printExpectedObtained(expected, obtained)
+
+	return false
+}
+
+// AssertEqual return true if `obtained` is equal to `expected` otherwise it
+// will print trace and exit.
+func AssertEqual(obtained, expected interface{}) bool {
 
 	if reflect.DeepEqual(expected, obtained) {
 		l, r := printShould(expected)
@@ -54,10 +84,38 @@ func readFileLine(filename string, line int) string {
 	return lines[line-1]
 }
 
+// deprecated
 // AssertEqualJson return true if `obtained` is equal to `expected`. Prior to
 // comparison, both values are JSON Marshaled/Unmarshaled to avoid JSON type
 // issues like int vs float etc. Otherwise it will print trace and exit.
 func (a *A) AssertEqualJson(obtained, expected interface{}) bool {
+	e := interface{}(nil)
+	{
+		b, _ := json.Marshal(expected)
+		json.Unmarshal(b, &e)
+	}
+
+	o := interface{}(nil)
+	{
+		b, _ := json.Marshal(obtained)
+		json.Unmarshal(b, &o)
+	}
+
+	if reflect.DeepEqual(e, o) {
+		l, r := printShould(expected)
+		fmt.Printf("    %s is same JSON as %s\n", l, r)
+		return true
+	}
+
+	printExpectedObtained(e, o)
+
+	return false
+}
+
+// AssertEqualJson return true if `obtained` is equal to `expected`. Prior to
+// comparison, both values are JSON Marshaled/Unmarshaled to avoid JSON type
+// issues like int vs float etc. Otherwise it will print trace and exit.
+func AssertEqualJson(obtained, expected interface{}) bool {
 
 	e := interface{}(nil)
 	{
@@ -82,6 +140,7 @@ func (a *A) AssertEqualJson(obtained, expected interface{}) bool {
 	return false
 }
 
+// deprecated
 // AssertNil return true if `obtained` is nil, otherwise it will print trace and
 // exit.
 func (a *A) AssertNil(obtained interface{}) bool {
@@ -97,6 +156,22 @@ func (a *A) AssertNil(obtained interface{}) bool {
 	return false
 }
 
+// AssertNil return true if `obtained` is nil, otherwise it will print trace and
+// exit.
+func AssertNil(obtained interface{}) bool {
+
+	if nil == obtained || reflect.ValueOf(obtained).IsNil() {
+		l, _ := printShould(nil)
+		fmt.Printf("    %s is nil\n", l)
+		return true
+	}
+
+	printExpectedObtained(nil, obtained)
+
+	return false
+}
+
+// deprecated
 // AssertNotNil return true if `obtained` is NOT nil, otherwise it will print trace
 // and exit.
 func (a *A) AssertNotNil(obtained interface{}) bool {
@@ -121,6 +196,31 @@ func (a *A) AssertNotNil(obtained interface{}) bool {
 	return true
 }
 
+// AssertNotNil return true if `obtained` is NOT nil, otherwise it will print trace
+// and exit.
+func AssertNotNil(obtained interface{}) bool {
+
+	if isNil(obtained) {
+		line := getStackLine(2)
+		fmt.Printf(""+
+			"    Expected: not nil\n"+
+			"    Obtained: %#v\n"+
+			"    at %s\n", obtained, line)
+		exit()
+		return false
+	}
+
+	l, _ := printShould(nil)
+	v := fmt.Sprintf("%#v", obtained)
+	if v != l {
+		v = " (" + v + ")"
+	}
+	fmt.Printf("    %s is not nil%s\n", l, v)
+
+	return true
+}
+
+// deprecated
 // AssertTrue return true if `obtained` is true, otherwise it will print trace
 // and exit.
 func (a *A) AssertTrue(obtained interface{}) bool {
@@ -136,6 +236,22 @@ func (a *A) AssertTrue(obtained interface{}) bool {
 	return false
 }
 
+// AssertTrue return true if `obtained` is true, otherwise it will print trace
+// and exit.
+func AssertTrue(obtained interface{}) bool {
+
+	if reflect.DeepEqual(true, obtained) {
+		l, _ := printShould(nil)
+		fmt.Printf("    %s is true\n", l)
+		return true
+	}
+
+	printExpectedObtained(true, obtained)
+
+	return false
+}
+
+// deprecated
 // AssertFalse return true if `obtained` is false, otherwise it will print trace
 // and exit.
 func (a *A) AssertFalse(obtained interface{}) bool {
@@ -151,9 +267,60 @@ func (a *A) AssertFalse(obtained interface{}) bool {
 	return false
 }
 
+// AssertFalse return true if `obtained` is false, otherwise it will print trace
+// and exit.
+func AssertFalse(obtained interface{}) bool {
+
+	if reflect.DeepEqual(false, obtained) {
+		l, _ := printShould(nil)
+		fmt.Printf("    %s is false\n", l)
+		return true
+	}
+
+	printExpectedObtained(true, obtained)
+
+	return false
+}
+
+// deprecated
 // AssertInArray return true if `item` match at least with one element of the
 // array. Otherwise it will print trace and exit.
 func (a *A) AssertInArray(array interface{}, item interface{}) bool {
+
+	v := reflect.ValueOf(array)
+	if v.Kind() != reflect.Array && v.Kind() != reflect.Slice {
+		line := getStackLine(2)
+		fmt.Printf("Expected second argument to be array:\n"+
+			"    Obtained: %#v\n"+
+			"    at %s\n", array, line)
+		exit()
+	}
+
+	l := v.Len()
+	for i := 0; i < l; i++ {
+		e := v.Index(i)
+		if reflect.DeepEqual(e.Interface(), item) {
+			l, r := printShould(item)
+			fmt.Printf("    %s[%d] is %s\n", l, i, r)
+			return true
+		}
+	}
+
+	line := getStackLine(2)
+	fmt.Printf(""+
+		"    Expected item to be in array.\n"+
+		"    Item: %#v\n"+
+		"    Array: %#v\n"+
+		"    at %s\n", item, array, line)
+
+	exit()
+
+	return false
+}
+
+// AssertInArray return true if `item` match at least with one element of the
+// array. Otherwise it will print trace and exit.
+func AssertInArray(array interface{}, item interface{}) bool {
 
 	v := reflect.ValueOf(array)
 	if v.Kind() != reflect.Array && v.Kind() != reflect.Slice {

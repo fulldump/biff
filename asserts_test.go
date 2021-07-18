@@ -15,7 +15,7 @@ func ExampleA_AssertEqual() {
 			"name": "John",
 		}
 
-		a.AssertEqual(user, creator)
+		AssertEqual(user, creator)
 
 	})
 
@@ -37,7 +37,7 @@ func ExampleA_AssertEqualJson() {
 			"number": float64(33),
 		}
 
-		a.AssertEqualJson(i, f)
+		AssertEqualJson(i, f)
 
 	})
 
@@ -51,7 +51,7 @@ func ExampleA_AssertFalse() {
 
 	Alternative("AssertFalse", func(a *A) {
 
-		a.AssertFalse(1 == 2)
+		AssertFalse(1 == 2)
 
 	})
 
@@ -68,7 +68,7 @@ func ExampleA_AssertInArray() {
 		data := []string{"a", "b", "c"}
 		myLetter := "b"
 
-		a.AssertInArray(data, myLetter)
+		AssertInArray(data, myLetter)
 
 	})
 
@@ -85,7 +85,7 @@ func ExampleA_AssertNil() {
 		x := 1
 		y := 2
 
-		a.AssertTrue(x+y == 3)
+		AssertTrue(x+y == 3)
 
 	})
 
@@ -102,7 +102,7 @@ func ExampleA_AssertNotEqual() {
 		x := 1
 		y := 2
 
-		a.AssertNotEqual(x, y)
+		AssertNotEqual(x, y)
 
 	})
 
@@ -123,7 +123,7 @@ func ExampleA_AssertNotNil() {
 			Name: "John",
 		}
 
-		a.AssertNotNil(user)
+		AssertNotNil(user)
 
 	})
 
@@ -140,7 +140,7 @@ func ExampleA_AssertTrue() {
 		x := 1
 		y := 2
 
-		a.AssertTrue(x+y == 3)
+		AssertTrue(x+y == 3)
 
 	})
 
@@ -166,7 +166,7 @@ func TestA_AssertEqual(t *testing.T) {
 		one := 1
 		other := 1
 
-		if !a.AssertEqual(one, other) {
+		if !AssertEqual(one, other) {
 			t.Error("AssertEqual should return true")
 		}
 	})
@@ -181,7 +181,7 @@ func TestA_AssertEqualFailed(t *testing.T) {
 		one := 1
 		other := 2
 
-		if a.AssertEqual(one, other) {
+		if AssertEqual(one, other) {
 			t.Error("AssertEqual should return false when fail")
 		}
 
@@ -202,7 +202,7 @@ func TestA_AssertEqualJson(t *testing.T) {
 			"number": float64(33),
 		}
 
-		if !a.AssertEqualJson(one, other) {
+		if !AssertEqualJson(one, other) {
 			t.Error("AssertEqualJson should return true")
 		}
 	})
@@ -221,7 +221,7 @@ func TestA_AssertEqualJsonFailed(t *testing.T) {
 			"number": 2,
 		}
 
-		if a.AssertEqualJson(one, other) {
+		if AssertEqualJson(one, other) {
 			t.Error("AssertEqualJson should return false")
 		}
 
@@ -252,7 +252,7 @@ func TestA_AssertNilFailed(t *testing.T) {
 	Alternative("Assert nil", func(a *A) {
 		one := []string{"1"}
 
-		if a.AssertNil(one) {
+		if AssertNil(one) {
 			t.Error("AssertNil should return false")
 		}
 
@@ -270,7 +270,7 @@ func TestA_AssertNotEqual(t *testing.T) {
 		one := 1
 		two := 2
 
-		if !a.AssertNotEqual(one, two) {
+		if !AssertNotEqual(one, two) {
 			t.Error("AssertNotEqual should return true")
 		}
 	})
@@ -285,7 +285,7 @@ func TestA_AssertNotEqualFailed(t *testing.T) {
 		one := 1
 		two := 1
 
-		if a.AssertNotEqual(one, two) {
+		if AssertNotEqual(one, two) {
 			t.Error("AssertNotEqual should return false")
 		}
 
@@ -302,7 +302,7 @@ func TestA_AssertNotNil(t *testing.T) {
 	Alternative("Assert not nil", func(a *A) {
 		one := []string{}
 
-		if !a.AssertNotNil(one) {
+		if !AssertNotNil(one) {
 			t.Error("AssertEqual should return true")
 		}
 	})
@@ -316,7 +316,7 @@ func TestA_AssertNotNilFailed(t *testing.T) {
 	Alternative("Assert not nil", func(a *A) {
 		one := interface{}(nil)
 
-		if a.AssertNotNil(one) {
+		if AssertNotNil(one) {
 			t.Error("AssertEqual should return false")
 		}
 
@@ -333,7 +333,7 @@ func TestA_AssertInArray(t *testing.T) {
 
 		colors := []string{"red", "green", "blue"}
 
-		if !a.AssertInArray(colors, "red") {
+		if !AssertInArray(colors, "red") {
 			t.Error("AssertInArray should return true")
 		}
 	})
@@ -348,7 +348,7 @@ func TestA_AssertInArrayFailed(t *testing.T) {
 
 		colors := []string{"red", "green", "blue"}
 
-		if a.AssertInArray("orange", colors) {
+		if AssertInArray("orange", colors) {
 			t.Error("AssertInArray should return false")
 		}
 
@@ -366,7 +366,7 @@ func TestA_AssertTrue(t *testing.T) {
 
 		value := 1 == 1
 
-		if !a.AssertTrue(value) {
+		if !AssertTrue(value) {
 			t.Error("AssertTrue should return true")
 		}
 	})
@@ -381,7 +381,7 @@ func TestA_AssertTrueFailed(t *testing.T) {
 
 		value := false
 
-		if a.AssertTrue(value) {
+		if AssertTrue(value) {
 			t.Error("AssertTrue should return false")
 		}
 
@@ -399,7 +399,7 @@ func TestA_AssertFalse(t *testing.T) {
 
 		value := 1 == 2
 
-		if !a.AssertFalse(value) {
+		if !AssertFalse(value) {
 			t.Error("AssertTrue should return true")
 		}
 	})
@@ -414,7 +414,7 @@ func TestA_AssertFalseFailed(t *testing.T) {
 
 		value := true
 
-		if a.AssertFalse(value) {
+		if AssertFalse(value) {
 			t.Error("AssertTrue should return false")
 		}
 

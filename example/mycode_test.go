@@ -37,8 +37,13 @@ func TestMyCode(t *testing.T) {
 				})
 			})
 
-			a.Alternative("Bad credentials", func(a *biff.A) {
+			a.Alternative("Bad password", func(a *biff.A) {
 				user := s.Login("john@email.com", "bad-password")
+				a.AssertNil(user)
+			})
+
+			a.Alternative("Bad email", func(a *biff.A) {
+				user := s.Login("bad@email.com", "bad-password")
 				a.AssertNil(user)
 			})
 
